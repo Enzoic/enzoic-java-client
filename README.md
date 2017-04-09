@@ -1,6 +1,6 @@
 # PasswordPing Java Client Library
 
-[![Build Status](https://travis-ci.org/passwordping/passwordping-java-client.svg?branch=master)](https://travis-ci.org/passwordping/passwordping-java-client)
+[![Build Status](https://travis-ci.org/PasswordPing/passwordping-java-client.svg?branch=master)](https://travis-ci.org/PasswordPing/passwordping-java-client)
 
 ## TOC
 
