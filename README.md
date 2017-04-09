@@ -102,4 +102,4 @@ PasswordPing passwordping = new PasswordPing(YOUR_API_KEY, YOUR_API_SECRET, "htt
 
 The JavaDocs contain more complete references for the API functions.  
 
-They can be found here: <http://passwordping.github.com/passwordping-java-client/>
+They can be found here: <http://javadoc.io/doc/com.passwordping/passwordping-java-client/>
