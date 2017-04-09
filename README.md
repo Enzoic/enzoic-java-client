@@ -43,7 +43,7 @@ dependencies {
 
 ### Download
 
-You can download a version of the `.jar` directly from <http://repo1.maven.org/maven2/com/passwordping/passwordping-java-client/>
+You can download a version of the `.jar` directly from <https://oss.sonatype.org/content/groups/public/com/passwordping/passwordping-java-client/>
 
 ### Source
 
