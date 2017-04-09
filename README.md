@@ -7,9 +7,9 @@
 This README covers the following topics:
 
 - [Installation](#installation)
-	- [Maven](#maven)
+	<!--- [Maven](#maven)
 	- [Gradle](#gradle)
-	- [Download](#download)
+	- [Download](#download)-->
 	- [Source](#source)
 - [API Overview](#api-overview)
 - [The PasswordPing constructor](#the-passwordping-constructor)
@@ -28,7 +28,7 @@ The passwordping-java-client is available in Maven Central.
     <dependency>
       <groupId>com.passwordping</groupId>
       <artifactId>passwordping-java-client</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
 </dependencies>
 ```
@@ -37,7 +37,7 @@ The passwordping-java-client is available in Maven Central.
 
 ```groovy
 dependencies {
-  compile 'com.passwordping:passwordping-java-client:1.0-SNAPSHOT'
+  compile 'com.passwordping:passwordping-java-client:1.0.0'
 }
 ```
 
