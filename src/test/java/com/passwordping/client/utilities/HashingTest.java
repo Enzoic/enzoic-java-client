@@ -66,5 +66,8 @@ class HashingTest {
     void crc32() {
         assertEquals("972d361", Hashing.crc32("123456"));
     }
+
+    @Test
+    void md5Crypt() { assertEquals("$1$4d3c09ea$hPwyka2ToWFbLTOq.yFjf.", Hashing.md5Crypt("123456", "$1$4d3c09ea")); }
 }
 

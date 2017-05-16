@@ -51,6 +51,9 @@ enum PasswordType {
     @SerializedName("14")
     SHA512 (14),
 
+    @SerializedName("16")
+    MD5Crypt (16),
+
     @SerializedName("97")
     Unknown (97),
 

@@ -13,6 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import de.mkammerer.argon2.jna.Argon2Library;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import org.apache.commons.codec.digest.Md5Crypt;
 
 public class Hashing {
 
@@ -179,6 +180,8 @@ public class Hashing {
 
         return Native.toString(outputHash);
     }
+
+    public static String md5Crypt(final String toHash, final String salt) { return Md5Crypt.md5Crypt(utf8ToByteArray(toHash), salt); }
 
     private static byte[] xor(byte[] array1, byte[] array2) {
         byte[] result = new byte[array1.length];
