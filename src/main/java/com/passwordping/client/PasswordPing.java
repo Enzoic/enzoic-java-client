@@ -302,6 +302,18 @@ public class PasswordPing {
                     return Hashing.customAlgorithm2(password, salt);
                 }
                 return null;
+            case SHA512:
+                return Hashing.sha512(password);
+            case MD5Crypt:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.md5Crypt(password, salt);
+                }
+                return null;
+            case CustomAlgorithm4:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.customAlgorithm4(password, salt);
+                }
+                return null;
             default:
                 return null;
         }

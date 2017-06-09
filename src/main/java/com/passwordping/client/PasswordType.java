@@ -54,6 +54,9 @@ enum PasswordType {
     @SerializedName("16")
     MD5Crypt (16),
 
+    @SerializedName("17")
+    CustomAlgorithm4 (17),
+
     @SerializedName("97")
     Unknown (97),
 

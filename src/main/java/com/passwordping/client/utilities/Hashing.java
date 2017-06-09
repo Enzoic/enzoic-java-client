@@ -3,6 +3,8 @@ package com.passwordping.client.utilities;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Base64.*;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -92,7 +94,21 @@ public class Hashing {
     }
 
     public static String bCrypt(final String toHash, final String salt) {
-        return BCrypt.hashpw(toHash, salt);
+        boolean yVersion = salt.startsWith("$2y$");
+        String checkedSalt = salt;
+
+        if (yVersion) {
+            checkedSalt = "$2a$" + salt.substring(4);
+        }
+
+        String result = BCrypt.hashpw(toHash, checkedSalt);
+
+        if (yVersion) {
+            return "$2y$" + result.substring(4);
+        }
+        else {
+            return result;
+        }
     }
 
     public static String phpbb3(final String toHash, final String salt) {
@@ -151,27 +167,79 @@ public class Hashing {
         return Hashing.md5(toHash + salt);
     }
 
+    public static String customAlgorithm4(final String toHash, final String salt) {
+        return Hashing.bCrypt(Hashing.md5(toHash), salt);
+    }
+
     public static String argon2(final String toHash, final String salt) {
 
+        // defaults
         Uint32_t iterations = new Uint32_t(3);
         Uint32_t memoryCost = new Uint32_t(1024);
         Uint32_t parallelism = new Uint32_t(2);
         Uint32_t hashLength = new Uint32_t(20);
         Size_t hashLengthSize = new Size_t(20);
         Argon2Factory.Argon2Types argonType = Argon2Factory.Argon2Types.ARGON2d;
+        String justSalt = salt;
+
+        // check if salt has settings encoded in it
+        if (salt.startsWith("$argon2")) {
+            // apparently has settings encoded in it - use these
+            if (salt.startsWith("$argon2i"))
+                argonType = Argon2Factory.Argon2Types.ARGON2i;
+
+            String[] saltComponents = salt.split("\\$");
+            if (saltComponents.length == 5) {
+                justSalt = new String(Base64.getDecoder().decode(saltComponents[4]));
+                String[] saltParams = saltComponents[3].split("\\,");
+
+                for (int i = 0; i < saltParams.length; i++) {
+                    try {
+                        String saltParam = saltParams[i];
+                        String[] saltParamValues = saltParam.split("\\=");
+                        switch (saltParamValues[0]) {
+                            case "t":
+                                iterations = new Uint32_t(Integer.parseInt(saltParamValues[1]));
+                                break;
+                            case "m":
+                                memoryCost = new Uint32_t(Integer.parseInt(saltParamValues[1]));
+                                break;
+                            case "p":
+                                parallelism = new Uint32_t(Integer.parseInt(saltParamValues[1]));
+                                break;
+                            case "l":
+                                hashLength = new Uint32_t(Integer.parseInt(saltParamValues[1]));
+                                hashLengthSize = new Size_t(Integer.parseInt(saltParamValues[1]));
+                                break;
+                        }
+                    }
+                    catch (NumberFormatException ex) {
+                        // ignore invalid parameters
+                    }
+                }
+            }
+        }
 
         byte[] toHashBytes = utf8ToByteArray(toHash);
-        byte[] saltBytes = utf8ToByteArray(salt);
+        byte[] saltBytes = utf8ToByteArray(justSalt);
 
         int len = Argon2Library.INSTANCE.argon2_encodedlen(iterations, memoryCost, parallelism,
                 new Uint32_t(saltBytes.length), hashLength, argonType.ordinal).intValue();
         final byte[] outputHash = new byte[len];
 
-        int result = Argon2Library.INSTANCE.argon2d_hash_encoded(
-                iterations, memoryCost, parallelism,
-                toHashBytes, new Size_t(toHashBytes.length),
-                saltBytes, new Size_t(saltBytes.length),
-                hashLengthSize, outputHash, new Size_t(outputHash.length));
+        int result;
+        if (argonType == Argon2Factory.Argon2Types.ARGON2i)
+            result = Argon2Library.INSTANCE.argon2i_hash_encoded(
+                    iterations, memoryCost, parallelism,
+                    toHashBytes, new Size_t(toHashBytes.length),
+                    saltBytes, new Size_t(saltBytes.length),
+                    hashLengthSize, outputHash, new Size_t(outputHash.length));
+        else
+            result = Argon2Library.INSTANCE.argon2d_hash_encoded(
+                    iterations, memoryCost, parallelism,
+                    toHashBytes, new Size_t(toHashBytes.length),
+                    saltBytes, new Size_t(saltBytes.length),
+                    hashLengthSize, outputHash, new Size_t(outputHash.length));
 
         if (result != Argon2Library.ARGON2_OK) {
             String errMsg = Argon2Library.INSTANCE.argon2_error_message(result);
