@@ -217,10 +217,6 @@ public class PasswordPing {
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Authorization", authString);
 
-        //if (!method.equals("GET")) {
-
-        //}
-
         int responseStatus = conn.getResponseCode();
 
         if (responseStatus == 200) {
@@ -244,7 +240,7 @@ public class PasswordPing {
     }
 
     private String CalcAuthString(final String apiKey, final String secret) {
-        return "basic " + java.util.Base64.getEncoder().encodeToString((apiKey + ":" + secret).getBytes());
+        return "basic " + Hashing.encodeBase64(apiKey + ":" + secret);
     }
 
     private String CalcCredentialHash(final String username, final String password, String salt, PasswordHashSpecification specification) {
@@ -254,7 +250,7 @@ public class PasswordPing {
             String argon2Hash = Hashing.argon2(username + "$" + passwordHash, salt);
 
             String justHash = argon2Hash.substring(argon2Hash.lastIndexOf('$') + 1);
-            return Hashing.bytesToHex(java.util.Base64.getDecoder().decode(justHash));
+            return Hashing.bytesToHex(Hashing.decodeBase64(justHash));
         }
         else {
             return null;

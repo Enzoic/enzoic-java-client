@@ -1,21 +1,22 @@
 package com.passwordping.client.utilities;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Base64.*;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import de.mkammerer.argon2.jna.Size_t;
 import de.mkammerer.argon2.jna.Uint32_t;
+import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.mindrot.jbcrypt.BCrypt;
 import de.mkammerer.argon2.jna.Argon2Library;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.codec.binary.BaseNCodec;;
 
 public class Hashing {
 
@@ -190,7 +191,7 @@ public class Hashing {
 
             String[] saltComponents = salt.split("\\$");
             if (saltComponents.length == 5) {
-                justSalt = new String(Base64.getDecoder().decode(saltComponents[4]));
+                justSalt = new String(decodeBase64(saltComponents[4]));
                 String[] saltParams = saltComponents[3].split("\\,");
 
                 for (int i = 0; i < saltParams.length; i++) {
@@ -250,6 +251,14 @@ public class Hashing {
     }
 
     public static String md5Crypt(final String toHash, final String salt) { return Md5Crypt.md5Crypt(utf8ToByteArray(toHash), salt); }
+
+    public static byte[] decodeBase64(String base64) {
+        return Base64.decodeBase64(base64);
+    }
+
+    public static String encodeBase64(String toEncode) {
+        return Base64.encodeBase64String(toEncode.getBytes());
+    }
 
     private static byte[] xor(byte[] array1, byte[] array2) {
         byte[] result = new byte[array1.length];
