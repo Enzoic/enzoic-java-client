@@ -1,11 +1,9 @@
 package com.passwordping.client.utilities;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import de.mkammerer.argon2.jna.Size_t;
 import de.mkammerer.argon2.jna.Uint32_t;
@@ -13,10 +11,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.mindrot.jbcrypt.BCrypt;
 import de.mkammerer.argon2.jna.Argon2Library;
-import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.commons.codec.binary.BaseNCodec;;
 
 public class Hashing {
 

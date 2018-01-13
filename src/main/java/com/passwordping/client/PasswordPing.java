@@ -1,21 +1,15 @@
 package com.passwordping.client;
 
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import com.passwordping.client.utilities.Hashing;
-import sun.security.util.Password;
 
 /**
  * This is the main entry point for accessing PasswordPing.
