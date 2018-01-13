@@ -47,9 +47,9 @@ class PasswordPingTest {
             assertTrue(result.getExposures().length == 0);
 
             result = passwordping.GetExposuresForUser("eicar");
-            assertEquals(4, result.getCount());
-            assertEquals(4, result.getExposures().length);
-            assertArrayEquals(new String[] {"5820469ffdb8780510b329cc", "58258f5efdb8780be88c2c5d", "582a8e51fdb87806acc426ff", "583d2f9e1395c81f4cfa3479"}, result.getExposures());
+            assertEquals(6, result.getCount());
+            assertEquals(6, result.getExposures().length);
+            assertArrayEquals(new String[] {"5820469ffdb8780510b329cc", "58258f5efdb8780be88c2c5d", "582a8e51fdb87806acc426ff", "583d2f9e1395c81f4cfa3479", "59ba1aa369644815dcd8683e", "59cae0ce1d75b80e0070957c"}, result.getExposures());
         }
         catch (Exception ex) {
             assertTrue(false, "Exception calling GetExposuresForUser: " + ex.getMessage());
