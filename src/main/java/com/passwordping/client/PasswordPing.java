@@ -29,6 +29,7 @@ public class PasswordPing {
     private String secret;
     private String authString;
     private String apiBaseURL;
+    private Integer requestTimeout = 0;
 
     /**
      * Creates a new instance of PasswordPing
@@ -63,6 +64,22 @@ public class PasswordPing {
         this.secret = secret;
         this.apiBaseURL = baseURL;
         this.authString = CalcAuthString(apiKey, secret);
+    }
+
+    /**
+     * Sets a timeout value for requests made to the PasswordPing API.
+     * @param timeoutInMs The timeout value in milliseconds to use.  0 indicates a timeout of infinity will be used.
+     */
+    public void SetRequestTimeout(final Integer timeoutInMs) {
+        this.requestTimeout = timeoutInMs;
+    }
+
+    /**
+     * Gets the current request timeout value being used for making requests to the PasswordPing API.
+     * @return The timeout value in milliseconds being used.  0 indicates a timeout of infinity.
+     */
+    public Integer GetRequestTimeout() {
+        return this.requestTimeout;
     }
 
     /**
@@ -207,6 +224,8 @@ public class PasswordPing {
         URL url = new URL(restUrl);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(this.requestTimeout);
+        conn.setReadTimeout(this.requestTimeout);
         conn.setRequestMethod(method);
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Authorization", authString);

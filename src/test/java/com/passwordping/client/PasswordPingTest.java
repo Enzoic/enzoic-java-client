@@ -22,6 +22,37 @@ class PasswordPingTest {
     }
 
     @Test
+    void checkRequestTimeout() {
+        PasswordPing passwordping = getPasswordPing();
+        assertEquals((Integer)0, passwordping.GetRequestTimeout());
+        passwordping.SetRequestTimeout(2);
+        assertEquals((Integer)2, passwordping.GetRequestTimeout());
+
+        // now try a request - it should timeout with a value of 2 ms being used
+        boolean exception = false;
+        try {
+            passwordping.CheckCredentials("test@passwordping.com", "123456");
+        }
+        catch (java.io.IOException ioException) {
+            exception = true;
+        }
+        assertTrue(exception);
+
+        passwordping.SetRequestTimeout(10000);
+        assertEquals((Integer)10000, passwordping.GetRequestTimeout());
+
+        // try another request - it should not timeout with a value of 10000 ms being used
+        exception = false;
+        try {
+            passwordping.CheckCredentials("test@passwordping.com", "123456");
+        }
+        catch (java.io.IOException ioException) {
+            exception = true;
+        }
+        assertFalse(exception);
+    }
+
+    @Test
     void checkCredentials() {
         PasswordPing passwordping = getPasswordPing();
 

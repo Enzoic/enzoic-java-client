@@ -28,7 +28,7 @@ The passwordping-java-client is available in Maven Central.
     <dependency>
       <groupId>com.passwordping</groupId>
       <artifactId>passwordping-java-client</artifactId>
-      <version>1.0.4</version>
+      <version>1.0.5</version>
     </dependency>
 </dependencies>
 ```
@@ -37,7 +37,7 @@ The passwordping-java-client is available in Maven Central.
 
 ```groovy
 dependencies {
-  compile 'com.passwordping:passwordping-java-client:1.0.4'
+  compile 'com.passwordping:passwordping-java-client:1.0.5'
 }
 ```
 
@@ -56,7 +56,10 @@ Here's the API in a nutshell.
 ```java
 // Create a new PasswordPing instance - this is our primary interface for making API calls
 PasswordPing passwordping = new PasswordPing(YOUR_API_KEY, YOUR_API_SECRET);
- 
+
+// (Optional) Set a reasonable timeout for our application, in milliseconds.
+passwordping.SetRequestTimeout(500);
+
 // Check whether a password has been compromised
 if (passwordping.CheckPassword("password-to-test")) {
     System.out.println("Password is compromised");
