@@ -197,7 +197,9 @@ public class PasswordPing {
     }
 
     /**
-     * Returns the detailed information for a credentials Exposure.
+     * Returns the detailed information for a credentials Exposure.  The responses to this call can and should be cached
+     * to limit the number of calls made.  The Exposure details are not typically expected to change over time, so they
+     * can be cached for relatively long periods of time, e.g. for up to 30 days.
      * @see <a href="https://www.passwordping.com/docs/exposures-api#get-exposure-details">https://www.passwordping.com/docs/exposures-api#get-exposure-details</a>
      * @param exposureID The ID of the Exposure
      * @return The response body contains the details of the Exposure or null if the Exposure ID could not be found.
