@@ -1,5 +1,7 @@
 package com.passwordping.client;
 
+import java.util.Date;
+
 /**
  * Response object for Accounts API call - internal use only
  */
@@ -21,6 +23,9 @@ class AccountsResponse {
         return passwordHashesRequired;
     }
 
+    public Date getLastBreachDate() { return lastBreachDate; }
+
     private String salt = "";
     private PasswordHashSpecification[] passwordHashesRequired = new PasswordHashSpecification[0];
+    private Date lastBreachDate;
 }

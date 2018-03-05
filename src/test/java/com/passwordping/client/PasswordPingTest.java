@@ -3,6 +3,7 @@ package com.passwordping.client;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.*;
+import java.util.Date;
 
 /**
  * These are actually live tests and require a valid API key and Secret to be set in your environment variables.
@@ -62,6 +63,31 @@ class PasswordPingTest {
 
             exposed = passwordping.CheckCredentials("test@passwordping.com", "notvalid");
             assertFalse(exposed);
+        }
+        catch (java.io.IOException ioException) {
+            assertTrue(false, "IO exception reaching API: " + ioException.getMessage());
+        }
+    }
+
+    @Test
+    void checkCredentialsEx() {
+        PasswordPing passwordping = getPasswordPing();
+
+        try {
+            boolean exposed = passwordping.CheckCredentialsEx("testpwdpng445", "testpwdpng4452", null, null);
+            assertTrue(exposed);
+
+            exposed = passwordping.CheckCredentialsEx("testpwdpng445", "notvalid", null, null);
+            assertFalse(exposed);
+
+            // make sure we don't get a positive response if the last check date is after the last breach date
+            exposed = passwordping.CheckCredentialsEx("testpwdpng445", "testpwdpng4452", new Date(2018, 3, 1, 0, 0), null);
+            assertFalse(exposed);
+
+            // now try by excluding the only valid password hash for this one and make sure we don't get a positive response
+            exposed = passwordping.CheckCredentialsEx("testpwdpng445", "testpwdpng4452", null, new PasswordType[] { PasswordType.vBulletinPost3_8_5 });
+            assertFalse(exposed);
+
         }
         catch (java.io.IOException ioException) {
             assertTrue(false, "IO exception reaching API: " + ioException.getMessage());

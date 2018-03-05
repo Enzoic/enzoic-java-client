@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.Date;
 import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import com.passwordping.client.utilities.Hashing;
@@ -96,6 +97,52 @@ public class PasswordPing {
      */
     public boolean CheckCredentials(final String username, final String password)
             throws IOException, RuntimeException {
+        return CheckCredentialsEx(username, password, null, null);
+    }
+
+    /**
+     * Calls the PasswordPing CheckCredentials API in a secure fashion to check whether the provided username and password
+     * are known to be compromised.
+     * This call is made securely to the server - only a salted and hashed representation of the credentials are passed and
+     * the salt value is not passed along with it.
+     * The Ex version of the call includes additional parameters that allow the client to tweak the performance of the call.
+     *
+     * lastCheckDate allows the caller to pass in the date of the last check that was made for the credentials in question.
+     * If the lastCheckDate is after the last new breach that was recorded for those credentials, there is no need to check them again
+     * and no hashes will be calculated and no credentials API call will be made.  This can substantially improve performance.
+     * Note that for this to work, the calling application will need to cache the date/time the last credentials check was
+     * made for a given set of user credentials and invalidate reset that date/time if the credentials are changed.
+     *
+     * excludeHashTypes allows the calling application to exclude certain expensive password hash algorithms from being
+     * calculated (e.g. BCrypt).  This can reduce the CPU impact of the call as well as potentially decrease the latency
+     * it introduces.
+     *
+     * @see <a href="https://www.passwordping.com/docs/credentials-api">https://www.passwordping.com/docs/credentials-api</a>
+     * @param username the username to check
+     * @param password the password to check
+     * @param lastCheckDate The timestamp for the last check you performed for this user.  If the date/time you provide
+     *                      for the last check is greater than the timestamp PasswordPing has for the last breach
+     *                      affecting this user, the check will not be performed.  This can be used to substantially
+     *                      increase performance.  Can be set to null if no last check was performed or the credentials
+     *                      have changed since.
+     * @param excludeHashTypes  An array of PasswordTypes to ignore when calculating hashes for the credentials check.
+     *                          By excluding computationally expensive PasswordTypes, such as BCrypt, it is possible to
+     *                          balance the performance of this call against security.  Can be set to null if you don't
+     *                          wish to exclude any hash types.
+     * @return if true, then the credentials are known to be compromised
+     * @throws IOException Could not communicate with PasswordPing server.
+     * @throws RuntimeException Runtime errors indicated by message
+     */
+    public boolean CheckCredentialsEx(final String username, final String password, final Date lastCheckDate,
+                                      final PasswordType excludeHashTypes[])
+            throws IOException, RuntimeException {
+
+        PasswordType[] excludedHashTypes = excludeHashTypes;
+        if (excludedHashTypes == null) {
+            excludedHashTypes = new PasswordType[0];
+        }
+
+        Date lastCheckedDate = lastCheckDate == null ? new Date(0) : lastCheckDate;
 
         String response = MakeRestCall(
                 apiBaseURL + ACCOUNTS_API_PATH + "?username=" +
@@ -110,6 +157,11 @@ public class PasswordPing {
         // deserialize response
         AccountsResponse accountsResponse = new Gson().fromJson(response, AccountsResponse.class);
 
+        // see if the lastCheckDate was later than the lastBreachDate - if so bail out
+        if (lastCheckedDate.after(accountsResponse.getLastBreachDate())) {
+            return false;
+        }
+
         // loop through the hashes required
         ArrayList<PasswordHashSpecification> hashesRequired = new ArrayList<PasswordHashSpecification>();
         hashesRequired.addAll(Arrays.asList(accountsResponse.getPasswordHashesRequired()));
@@ -120,6 +172,11 @@ public class PasswordPing {
         StringBuilder queryString = new StringBuilder();
         for (int i = 0 ; i < Math.min(50, hashesRequired.size()); i++) {
             PasswordHashSpecification hashSpec = hashesRequired.get(i);
+
+            if (Arrays.asList(excludedHashTypes).contains(hashSpec.getHashType())) {
+                // skip this one
+                continue;
+            }
 
             // bcrypt gets far too expensive for good response time if there are many of them to calculate.
             // some mostly garbage accounts have accumulated a number of them in our DB and if we happen to hit one it

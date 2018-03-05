@@ -75,6 +75,16 @@ if (passwordping.CheckCredentials("test@passwordping.com", "password-to-test")) 
 else {
     System.out.println("Credentials are not compromised");
 }
+
+// Use the CheckCredentialsEx call to tweak performance by including the
+// date/time of the last check and excluding BCrypt
+if (passwordping.CheckCredentialsEx("test@passwordping.com", "password-to-test",
+        lastCheckTimestamp, new PasswordType[] { PasswordType.BCrypt })) {
+    System.out.println("Credentials are compromised");
+}
+else {
+    System.out.println("Credentials are not compromised");
+}
  
 // get all exposures for a given user
 ExposuresResponse exposures = passwordping.GetExposuresForUser("test@passwordping.com");
