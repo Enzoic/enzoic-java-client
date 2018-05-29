@@ -169,6 +169,7 @@ public class PasswordPing {
         //String queryString = "";
         int bcryptCount = 0;
 
+        ArrayList<String> credentialHashes = new ArrayList<String>();
         StringBuilder queryString = new StringBuilder();
         for (int i = 0 ; i < Math.min(50, hashesRequired.size()); i++) {
             PasswordHashSpecification hashSpec = hashesRequired.get(i);
@@ -188,10 +189,11 @@ public class PasswordPing {
                     String credentialHash = CalcCredentialHash(username, password, accountsResponse.getSalt(), hashSpec);
 
                     if (credentialHash != null) {
+                        credentialHashes.add(credentialHash);
                         if (queryString.length() == 0)
-                            queryString.append("?hashes=").append(URLEncoder.encode(credentialHash, "UTF-8"));
+                            queryString.append("?partialHashes=").append(URLEncoder.encode(credentialHash.substring(0, 10), "UTF-8"));
                         else
-                            queryString.append("&hashes=").append(URLEncoder.encode(credentialHash, "UTF-8"));
+                            queryString.append("&partialHashes=").append(URLEncoder.encode(credentialHash.substring(0, 10), "UTF-8"));
                     }
                 }
             }
@@ -201,7 +203,16 @@ public class PasswordPing {
             String credsResponse = MakeRestCall(
                     apiBaseURL + CREDENTIALS_API_PATH + queryString, "GET", null);
 
-            return !credsResponse.equals("404");
+            if (!credsResponse.equals("404")) {
+                CheckCredentialsPartialHashesResponse parsedResponse =
+                        new Gson().fromJson(credsResponse, CheckCredentialsPartialHashesResponse.class);
+
+                for (int i = 0; i < parsedResponse.candidateHashes().length; i++) {
+                    if (credentialHashes.contains(parsedResponse.candidateHashes()[i])) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
@@ -217,14 +228,31 @@ public class PasswordPing {
     public boolean CheckPassword(final String password)
             throws IOException, RuntimeException {
 
+        String md5 = Hashing.md5(password);
+        String sha1 = Hashing.sha1(password);
+        String sha256 = Hashing.sha256(password);
+
         String response = MakeRestCall(
                 apiBaseURL + PASSWORDS_API_PATH +
-                    "?md5=" + Hashing.md5(password) +
-                    "&sha1=" + Hashing.sha1(password) +
-                    "&sha256=" + Hashing.sha256(password),
+                    "?partial_md5=" + md5.substring(0, 10) +
+                    "&partial_sha1=" + sha1.substring(0, 10) +
+                    "&partial_sha256=" + sha256.substring(0, 10),
                 "GET", null);
 
-        return !response.equals("404");
+        if (!response.equals("404")) {
+            CheckPasswordPartialHashesResponse parsedResponse =
+                    new Gson().fromJson(response, CheckPasswordPartialHashesResponse.class);
+
+            for (int i = 0; i < parsedResponse.candidates().length; i++) {
+                if (parsedResponse.candidates()[i].md5().equals(md5) ||
+                    parsedResponse.candidates()[i].sha1().equals(sha1) ||
+                    parsedResponse.candidates()[i].sha256().equals(sha256)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -380,6 +408,58 @@ public class PasswordPing {
             case CustomAlgorithm4:
                 if (salt != null && salt.length() > 0) {
                     return Hashing.customAlgorithm4(password, salt);
+                }
+                return null;
+            case CustomAlgorithm5:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.customAlgorithm5(password, salt);
+                }
+                return null;
+            case osCommerce_AEF:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.osCommerce_AEF(password, salt);
+                }
+                return null;
+            case DESCrypt:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.desCrypt(password, salt);
+                }
+                return null;
+            case MySQLPre4_1:
+                return Hashing.mySQLPre4_1(password);
+            case MySQLPost4_1:
+                return Hashing.mySQLPost4_1(password);
+            case PeopleSoft:
+                return Hashing.peopleSoft(password);
+            case PunBB:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.punBB(password, salt);
+                }
+                return null;
+            case PartialMD5_20:
+                return Hashing.md5(password).substring(0, 20);
+            case AVE_DataLife_Diferior:
+                return Hashing.ave_DataLife_Diferior(password);
+            case DjangoMD5:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.djangoMD5(password, salt);
+                }
+                return null;
+            case DjangoSHA1:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.djangoSHA1(password, salt);
+                }
+                return null;
+            case PartialMD5_29:
+                return Hashing.md5(password).substring(0, 29);
+            case PliggCMS:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.pliggCMS(password, salt);
+                }
+                return null;
+            case RunCMS_SMF1_1:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.runCMS_SMF1_1(password, salt);
                 }
                 return null;
             default:

@@ -57,6 +57,51 @@ enum PasswordType {
     @SerializedName("17")
     CustomAlgorithm4 (17),
 
+    @SerializedName("18")
+    CustomAlgorithm5 (18),
+
+    @SerializedName("19")
+    osCommerce_AEF (19),
+
+    @SerializedName("20")
+    DESCrypt (20),
+
+    @SerializedName("21")
+    MySQLPre4_1 (21),
+
+    @SerializedName("22")
+    MySQLPost4_1 (22),
+
+    @SerializedName("23")
+    PeopleSoft (23),
+
+    @SerializedName("24")
+    PunBB (24),
+
+    @SerializedName("25")
+    CustomAlgorithm6 (25),
+
+    @SerializedName("26")
+    PartialMD5_20 (26),
+
+    @SerializedName("27")
+    AVE_DataLife_Diferior (27),
+
+    @SerializedName("28")
+    DjangoMD5 (28),
+
+    @SerializedName("29")
+    DjangoSHA1 (29),
+
+    @SerializedName("30")
+    PartialMD5_29 (30),
+
+    @SerializedName("31")
+    PliggCMS (31),
+
+    @SerializedName("32")
+    RunCMS_SMF1_1 (32),
+
     @SerializedName("97")
     Unknown (97),
 

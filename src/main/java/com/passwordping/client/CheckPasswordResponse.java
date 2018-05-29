@@ -22,6 +22,27 @@ class CheckPasswordResponse {
         return revealedInExposure;
     }
 
+    /**
+     * MD5 hash of the returned candidate.  Can be compared to the local MD5 to determine if this candidate is a match.
+     * @return a string containing the MD5 of this candidate password hash
+     */
+    public String md5() { return md5; }
+
+    /**
+     * SHA1 hash of the returned candidate.  Can be compared to the local SHA1 to determine if this candidate is a match.
+     * @return a string containing the SHA1 of this candidate password hash
+     */
+    public String sha1() { return sha1; }
+
+    /**
+     * SHA256 hash of the returned candidate.  Can be compared to the local SHA256 to determine if this candidate is a match.
+     * @return a string containing the SHA256 of this candidate password hash
+     */
+    public String sha256() { return sha256; }
+
     private boolean compromised = false;
     private boolean revealedInExposure = false;
+    private String md5 = "";
+    private String sha1 = "";
+    private String sha256 = "";
 }

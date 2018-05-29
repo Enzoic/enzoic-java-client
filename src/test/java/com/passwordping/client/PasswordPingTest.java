@@ -175,6 +175,20 @@ class PasswordPingTest {
             assertEquals("ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff", method.invoke(passwordping, new Object[] { PasswordType.SHA512, "test", null }));
             assertEquals("$1$4d3c09ea$hPwyka2ToWFbLTOq.yFjf.", method.invoke(passwordping, new Object[] { PasswordType.MD5Crypt, "123456", "$1$4d3c09ea" }));
             assertEquals("$2y$12$Yjk3YjIzYWIxNDg0YWMzZOpp/eAMuWCD3UwX1oYgRlC1ci4Al970W", method.invoke(passwordping, new Object[] { PasswordType.CustomAlgorithm4, "1234", "$2y$12$Yjk3YjIzYWIxNDg0YWMzZO" }));
+            assertEquals("69e7ade919a318d8ecf6fd540bad9f169bce40df4cae4ac1fb6be2c48c514163", method.invoke(passwordping, new Object[] { PasswordType.CustomAlgorithm5, "password", "123456" }));
+            assertEquals("d2bc2f8d09990ebe87c809684fd78c66", method.invoke(passwordping, new Object[] { PasswordType.osCommerce_AEF, "password", "123" }));
+            assertEquals("yDba8kDA7NUDQ", method.invoke(passwordping, new Object[] { PasswordType.DESCrypt, "qwerty", "yD" }));
+            assertEquals("5d2e19393cc5ef67", method.invoke(passwordping, new Object[] { PasswordType.MySQLPre4_1, "password", null }));
+            assertEquals("*94bdcebe19083ce2a1f959fd02f964c7af4cfc29", method.invoke(passwordping, new Object[] { PasswordType.MySQLPost4_1, "test", null }));
+            assertEquals("3weP/BR8RHPLP2459h003IgJxyU=", method.invoke(passwordping, new Object[] { PasswordType.PeopleSoft, "TESTING", null }));
+            assertEquals("0c9a0dc3dd0b067c016209fd46749c281879069e", method.invoke(passwordping, new Object[] { PasswordType.PunBB, "password", "123" }));
+            assertEquals("5f4dcc3b5aa765d61d83", method.invoke(passwordping, new Object[] { PasswordType.PartialMD5_20, "password", null }));
+            assertEquals("696d29e0940a4957748fe3fc9efd22a3", method.invoke(passwordping, new Object[] { PasswordType.AVE_DataLife_Diferior, "password", null }));
+            assertEquals("md5$c6218$346abd81f2d88b4517446316222f4276", method.invoke(passwordping, new Object[] { PasswordType.DjangoMD5, "password", "c6218" }));
+            assertEquals("sha1$c6218$161d1ac8ab38979c5a31cbaba4a67378e7e60845", method.invoke(passwordping, new Object[] { PasswordType.DjangoSHA1, "password", "c6218" }));
+            assertEquals("5f4dcc3b5aa765d61d8327deb882c", method.invoke(passwordping, new Object[] { PasswordType.PartialMD5_29, "password", null }));
+            assertEquals("1230de084f38ace8e3d82597f55cc6ad5d6001568e6", method.invoke(passwordping, new Object[] { PasswordType.PliggCMS, "password", "123" }));
+            assertEquals("0de084f38ace8e3d82597f55cc6ad5d6001568e6", method.invoke(passwordping, new Object[] { PasswordType.RunCMS_SMF1_1, "password", "123" }));
         }
         catch (Exception ex) {
             assertTrue(false, "Exception calling CalcPasswordHash: " + ex.getMessage());

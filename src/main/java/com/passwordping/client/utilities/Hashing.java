@@ -13,6 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import de.mkammerer.argon2.jna.Argon2Library;
 import com.sun.jna.Native;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.codec.digest.Crypt;
 
 public class Hashing {
 
@@ -33,12 +34,19 @@ public class Hashing {
     }
 
     public static String sha1(final String toHash) {
-        try {
-            return bytesToHex(MessageDigest.getInstance("SHA-1").digest(utf8ToByteArray(toHash)));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Missing required hashing algorithm: SHA-1");
-        }
+        return bytesToHex(sha1Binary(toHash));
+    }
 
+    public static byte[] sha1Binary(final String toHash) {
+        return Hashing.sha1Binary(utf8ToByteArray(toHash));
+    }
+
+    public static byte[] sha1Binary(final byte[] toHash) {
+        try {
+            return MessageDigest.getInstance("SHA-1").digest(toHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Missing required hashing algorithm: SHA1");
+        }
     }
 
     public static String sha256(final String toHash) {
@@ -168,6 +176,79 @@ public class Hashing {
         return Hashing.bCrypt(Hashing.md5(toHash), salt);
     }
 
+    public static String customAlgorithm5(final String toHash, final String salt) {
+        return Hashing.sha256(Hashing.md5(toHash + salt));
+    }
+
+    public static String osCommerce_AEF(final String toHash, final String salt) {
+        return Hashing.md5(salt + toHash);
+    }
+
+    public static String desCrypt(final String toHash, final String salt) { return Crypt.crypt(utf8ToByteArray(toHash), salt); }
+
+    public static String mySQLPre4_1(final String toHash) {
+        int result1;
+        int result2;
+        int nr = 1345345333;
+        int add = 7;
+        int nr2 = 0x12345671;
+        int tmp;
+
+        for (int i = 0; i < toHash.length(); i++) {
+            char c = toHash.charAt(i);
+
+            if (c == ' ' || c == '\t')
+                continue;
+
+            tmp = c;
+            nr ^= (((nr & 63) + add) * tmp) + (nr << 8);
+            nr2 += (nr2 << 8) ^ nr;
+            add += tmp;
+        }
+
+        result1 = nr & ((1 << 31) - 1);
+        result2 = nr2 & ((1 << 31) - 1);
+
+        return Integer.toHexString(result1) + Integer.toHexString(result2);
+    }
+
+    public static String mySQLPost4_1(final String toHash) {
+        return "*" + bytesToHex(Hashing.sha1Binary(Hashing.sha1Binary(toHash)));
+    }
+
+    public static String peopleSoft(final String toHash) {
+        try {
+            return encodeBase64(Hashing.sha1Binary(toHash.getBytes("UTF-16LE")));
+        }
+        catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Unsupport encoding: UTF16");
+        }
+    }
+
+    public static String punBB(final String toHash, final String salt) {
+        return Hashing.sha1(salt + Hashing.sha1(toHash));
+    }
+
+    public static String ave_DataLife_Diferior(final String toHash) {
+        return Hashing.md5(Hashing.md5(toHash));
+    }
+
+    public static String djangoMD5(final String toHash, final String salt) {
+        return "md5$" + salt + "$" + Hashing.md5(salt + toHash);
+    }
+
+    public static String djangoSHA1(final String toHash, final String salt) {
+        return "sha1$" + salt + "$" + Hashing.sha1(salt + toHash);
+    }
+
+    public static String pliggCMS(final String toHash, final String salt) {
+        return salt + Hashing.sha1(salt + toHash);
+    }
+
+    public static String runCMS_SMF1_1(final String toHash, final String salt) {
+        return Hashing.sha1(salt + toHash);
+    }
+
     public static String argon2(final String toHash, final String salt) {
 
         // defaults
@@ -254,6 +335,10 @@ public class Hashing {
 
     public static String encodeBase64(String toEncode) {
         return Base64.encodeBase64String(toEncode.getBytes());
+    }
+
+    public static String encodeBase64(byte[] toEncode) {
+        return Base64.encodeBase64String(toEncode);
     }
 
     private static byte[] xor(byte[] array1, byte[] array2) {
