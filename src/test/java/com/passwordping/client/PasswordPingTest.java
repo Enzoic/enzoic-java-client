@@ -151,6 +151,28 @@ class PasswordPingTest {
     }
 
     @Test
+    void checkPasswordEx() {
+        PasswordPing passwordping = new PasswordPing(getAPIKey(), getAPISecret());
+
+        try {
+            CheckPasswordExResponse response = passwordping.CheckPasswordEx("kjdlkjdlksjdlskjdlskjslkjdslkdjslkdjslkd");
+            assertEquals(null, response);
+            response = passwordping.CheckPasswordEx("123456");
+            assertEquals(true, response.isRevealedInExposure());
+            assertTrue(response.relativeExposureFrequency() > 10);
+            response = passwordping.CheckPasswordEx("password");
+            assertEquals(true, response.isRevealedInExposure());
+            assertTrue(response.relativeExposureFrequency() > 10);
+            response = passwordping.CheckPasswordEx("``--...____...--''");
+            assertEquals(false, response.isRevealedInExposure());
+            assertEquals(0, response.relativeExposureFrequency());
+        }
+        catch (Exception ex) {
+            assertTrue(false, "Exception calling CheckPasswordEx: " + ex.getMessage());
+        }
+    }
+
+    @Test
     void checkCalcPasswordHash() {
         PasswordPing passwordping = new PasswordPing(getAPIKey(), getAPISecret());
 

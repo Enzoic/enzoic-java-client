@@ -227,6 +227,21 @@ public class PasswordPing {
      */
     public boolean CheckPassword(final String password)
             throws IOException, RuntimeException {
+        return CheckPasswordEx(password) != null;
+    }
+
+    /**
+     * Checks whether the provided password is in the PasswordPing database of known, compromised passwords.  Returns extended
+     * information about the compromised status of the password.
+     * @see <a href="https://www.passwordping.com/docs/passwords-api">https://www.passwordping.com/docs/passwords-api</a>
+     * @param password The password to be checked
+     * @return If compromised, returns a CheckPasswordExResponse containing details of the compromised status of the password.
+     *   Otherwise returns null.
+     * @throws IOException Could not communicate with PasswordPing server.
+     * @throws RuntimeException Runtime errors indicated by message
+     */
+    public CheckPasswordExResponse CheckPasswordEx(final String password)
+            throws IOException, RuntimeException {
 
         String md5 = Hashing.md5(password);
         String sha1 = Hashing.sha1(password);
@@ -234,9 +249,9 @@ public class PasswordPing {
 
         String response = MakeRestCall(
                 apiBaseURL + PASSWORDS_API_PATH +
-                    "?partial_md5=" + md5.substring(0, 10) +
-                    "&partial_sha1=" + sha1.substring(0, 10) +
-                    "&partial_sha256=" + sha256.substring(0, 10),
+                        "?partial_md5=" + md5.substring(0, 10) +
+                        "&partial_sha1=" + sha1.substring(0, 10) +
+                        "&partial_sha256=" + sha256.substring(0, 10),
                 "GET", null);
 
         if (!response.equals("404")) {
@@ -245,14 +260,14 @@ public class PasswordPing {
 
             for (int i = 0; i < parsedResponse.candidates().length; i++) {
                 if (parsedResponse.candidates()[i].md5().equals(md5) ||
-                    parsedResponse.candidates()[i].sha1().equals(sha1) ||
-                    parsedResponse.candidates()[i].sha256().equals(sha256)) {
-                    return true;
+                        parsedResponse.candidates()[i].sha1().equals(sha1) ||
+                        parsedResponse.candidates()[i].sha256().equals(sha256)) {
+                    return new CheckPasswordExResponse(parsedResponse.candidates()[i].isRevealedInExposure(), parsedResponse.candidates()[i].relativeExposureFrequency());
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

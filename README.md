@@ -67,6 +67,23 @@ if (passwordping.CheckPassword("password-to-test")) {
 else {
     System.out.println("Password is not compromised");
 }
+
+// Check whether a password has been compromised with extended return information
+CheckPasswordExResponse response = passwordping.CheckPasswordEx("password-to-test");
+if (response != null) {
+    System.out.println("Password is compromised");
+    if (response.isRevealedInExposure()) {
+        System.out.println("Password has been revealed in a data breach and has a relative breach frequency of " +
+            Integer.toString(response.relativeExposureFrequency()));
+    }
+    else {
+        System.out.println("Password has not been revealed in a data breach, but exists publicly in cracking dictionaies.");
+    }
+}
+else {
+    System.out.println("Password is not compromised");
+}
+
  
 // Check whether a specific set of credentials are compromised
 if (passwordping.CheckCredentials("test@passwordping.com", "password-to-test")) {
