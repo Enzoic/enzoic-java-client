@@ -3,7 +3,7 @@ package com.passwordping.client;
 /**
  * The response from the CheckPasswordsEx call
  */
-class CheckPasswordExResponse {
+public class CheckPasswordExResponse {
 
     /**
      * This is a gauge of how frequently the password has been seen in data breaches. The value is simply the percent
