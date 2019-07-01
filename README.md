@@ -1,6 +1,6 @@
-# PasswordPing Java Client Library
+# Enzoic Java Client Library
 
-[![Build Status](https://travis-ci.org/PasswordPing/passwordping-java-client.svg?branch=master)](https://travis-ci.org/PasswordPing/passwordping-java-client)
+[![Build Status](https://travis-ci.org/Enzoic/enzoic-java-client.svg?branch=master)](https://travis-ci.org/Enzoic/enzoic-java-client)
 
 ## TOC
 
@@ -12,7 +12,7 @@ This README covers the following topics:
 	- [Download](#download)-->
 	- [Source](#source)
 - [API Overview](#api-overview)
-- [The PasswordPing constructor](#the-passwordping-constructor)
+- [The Enzoic constructor](#the-enzoic-constructor)
 - [JavaDocs](#javadocs)
 
 ## Installation
@@ -21,13 +21,13 @@ The compiled library is available in two ways:
 
 ### Maven
 
-The passwordping-java-client is available in Maven Central.
+The enzoic-java-client is available in Maven Central.
 
 ```xml
 <dependencies>
     <dependency>
-      <groupId>com.passwordping</groupId>
-      <artifactId>passwordping-java-client</artifactId>
+      <groupId>com.enzoic</groupId>
+      <artifactId>enzoic-java-client</artifactId>
       <version>1.0.6</version>
     </dependency>
 </dependencies>
@@ -37,13 +37,13 @@ The passwordping-java-client is available in Maven Central.
 
 ```groovy
 dependencies {
-  compile 'com.passwordping:passwordping-java-client:1.0.6'
+  compile 'com.enzoic:enzoic-java-client:1.0.6'
 }
 ```
 
 ### Download
 
-You can download a version of the `.jar` directly from <https://oss.sonatype.org/content/groups/public/com/passwordping/passwordping-java-client/>
+You can download a version of the `.jar` directly from <https://oss.sonatype.org/content/groups/public/com/enzoic/enzoic-java-client/>
 
 ### Source
 
@@ -54,14 +54,14 @@ You can build the project from the source in this repository.
 Here's the API in a nutshell.
 
 ```java
-// Create a new PasswordPing instance - this is our primary interface for making API calls
-PasswordPing passwordping = new PasswordPing(YOUR_API_KEY, YOUR_API_SECRET);
+// Create a new Enzoic instance - this is our primary interface for making API calls
+Enzoic enzoic = new Enzoic(YOUR_API_KEY, YOUR_API_SECRET);
 
 // (Optional) Set a reasonable timeout for our application, in milliseconds.
-passwordping.SetRequestTimeout(500);
+enzoic.SetRequestTimeout(500);
 
 // Check whether a password has been compromised
-if (passwordping.CheckPassword("password-to-test")) {
+if (enzoic.CheckPassword("password-to-test")) {
     System.out.println("Password is compromised");
 }
 else {
@@ -69,7 +69,7 @@ else {
 }
 
 // Check whether a password has been compromised with extended return information
-CheckPasswordExResponse response = passwordping.CheckPasswordEx("password-to-test");
+CheckPasswordExResponse response = enzoic.CheckPasswordEx("password-to-test");
 if (response != null) {
     System.out.println("Password is compromised");
     if (response.isRevealedInExposure()) {
@@ -86,7 +86,7 @@ else {
 
  
 // Check whether a specific set of credentials are compromised
-if (passwordping.CheckCredentials("test@passwordping.com", "password-to-test")) {
+if (enzoic.CheckCredentials("test@enzoic.com", "password-to-test")) {
     System.out.println("Credentials are compromised");
 }
 else {
@@ -95,7 +95,7 @@ else {
 
 // Use the CheckCredentialsEx call to tweak performance by including the
 // date/time of the last check and excluding BCrypt
-if (passwordping.CheckCredentialsEx("test@passwordping.com", "password-to-test",
+if (enzoic.CheckCredentialsEx("test@enzoic.com", "password-to-test",
         lastCheckTimestamp, new PasswordType[] { PasswordType.BCrypt })) {
     System.out.println("Credentials are compromised");
 }
@@ -104,32 +104,32 @@ else {
 }
  
 // get all exposures for a given user
-ExposuresResponse exposures = passwordping.GetExposuresForUser("test@passwordping.com");
-System.out.println(exposures.getCount() + " exposures found for test@passwordping.com");
+ExposuresResponse exposures = enzoic.GetExposuresForUser("test@enzoic.com");
+System.out.println(exposures.getCount() + " exposures found for test@enzoic.com");
  
 // now get the full details for the first exposure found
-ExposureDetails details = passwordping.GetExposureDetails(exposures.getExposures()[0]);
-System.out.println("First exposure for test@passwordping.com was " + details.getTitle());
+ExposureDetails details = enzoic.GetExposureDetails(exposures.getExposures()[0]);
+System.out.println("First exposure for test@enzoic.com was " + details.getTitle());
 ```
 
 More information in reference format can be found below.
 
-## The PasswordPing constructor
+## The Enzoic constructor
 
-The standard constructor takes the API key and secret you were issued on PasswordPing signup.
+The standard constructor takes the API key and secret you were issued on Enzoic signup.
 
 ```java
-PasswordPing passwordping = new PasswordPing(YOUR_API_KEY, YOUR_API_SECRET);
+Enzoic enzoic = new Enzoic(YOUR_API_KEY, YOUR_API_SECRET);
 ```
 
 If you were instructed to use an alternate API endpoint, you may call the overloaded constructor and pass the base URL you were provided.
 
 ```java
-PasswordPing passwordping = new PasswordPing(YOUR_API_KEY, YOUR_API_SECRET, "https://api-alt.passwordping.com/v1");
+Enzoic enzoic = new Enzoic(YOUR_API_KEY, YOUR_API_SECRET, "https://api-alt.enzoic.com/v1");
 ```
 
 ## JavaDocs
 
 The JavaDocs contain more complete references for the API functions.  
 
-They can be found here: <http://javadoc.io/doc/com.passwordping/passwordping-java-client/>
+They can be found here: <http://javadoc.io/doc/com.enzoic/enzoic-java-client/>

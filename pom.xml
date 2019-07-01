@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.passwordping</groupId>
-    <artifactId>passwordping-java-client</artifactId>
-    <version>2.1.0</version>
+    <groupId>com.enzoic</groupId>
+    <artifactId>enzoic-java-client</artifactId>
+    <version>3.0.1</version>
     <packaging>jar</packaging>
-    <name>PasswordPing Java Client Library</name>
-    <description>A Java client library for the PasswordPing API</description>
-    <url>https://www.passwordping.com/docs</url>
+    <name>Enzoic Java Client Library</name>
+    <description>A Java client library for the Enzoic API</description>
+    <url>https://www.enzoic.com/docs</url>
 
     <licenses>
         <license>
@@ -22,16 +22,16 @@
 
     <developers>
         <developer>
-            <name>PasswordPing</name>
-            <email>support@passwordping.com</email>
-            <url>https://www.passwordping.com</url>
+            <name>Enzoic</name>
+            <email>support@enzoic.com</email>
+            <url>https://www.enzoic.com</url>
         </developer>
     </developers>
 
     <scm>
-        <url>https://github.com/passwordping/passwordping-java-client</url>
-        <connection>scm:git:git://github.com/passwordping/passwordping-java-client.git</connection>
-        <developerConnection>scm:git:git@github.com:passwordping/passwordping-java-client.git</developerConnection>
+        <url>https://github.com/Enzoic/enzoic-java-client</url>
+        <connection>scm:git:git://github.com/Enzoic/enzoic-java-client.git</connection>
+        <developerConnection>scm:git:git@github.com:Enzoic/enzoic-java-client.git</developerConnection>
     </scm>
 
     <properties>
@@ -116,7 +116,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -159,7 +159,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
+                <version>3.1.0</version>
                 <reportSets>
                     <reportSet>
                         <id>html</id>
@@ -168,7 +168,7 @@
                             <reportOutputDirectory>${project.reporting.outputDirectory}/apidocs</reportOutputDirectory>
                             <overview>${basedir}/src/main/javadoc/overview.html</overview>
                             <show>public</show>
-                            <excludePackageNames>com.passwordping.client.utilities</excludePackageNames>
+                            <excludePackageNames>com.enzoic.client.utilities</excludePackageNames>
                         </configuration>
                         <reports>
                             <report>javadoc</report>
