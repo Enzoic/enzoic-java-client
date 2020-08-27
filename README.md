@@ -73,7 +73,9 @@ CheckPasswordExResponse response = enzoic.CheckPasswordEx("password-to-test");
 if (response != null) {
     System.out.println("Password is compromised");
     if (response.isRevealedInExposure()) {
-        System.out.println("Password has been revealed in a data breach and has a relative breach frequency of " +
+        System.out.println("Password has been revealed in a data breach " +
+            Integer.toString(response.exposureCount()) +  
+            " times and has a relative breach frequency of " +
             Integer.toString(response.relativeExposureFrequency()));
     }
     else {

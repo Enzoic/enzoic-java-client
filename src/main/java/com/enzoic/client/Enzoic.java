@@ -262,7 +262,9 @@ public class Enzoic {
                 if (parsedResponse.candidates()[i].md5().equals(md5) ||
                         parsedResponse.candidates()[i].sha1().equals(sha1) ||
                         parsedResponse.candidates()[i].sha256().equals(sha256)) {
-                    return new CheckPasswordExResponse(parsedResponse.candidates()[i].isRevealedInExposure(), parsedResponse.candidates()[i].relativeExposureFrequency());
+                    return new CheckPasswordExResponse(parsedResponse.candidates()[i].isRevealedInExposure(),
+                            parsedResponse.candidates()[i].relativeExposureFrequency(),
+                            parsedResponse.candidates()[i].exposureCount());
                 }
             }
         }
