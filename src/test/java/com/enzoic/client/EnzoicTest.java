@@ -89,6 +89,9 @@ class EnzoicTest {
             exposed = enzoic.CheckCredentialsEx("testpwdpng445", "testpwdpng4452", null, new PasswordType[] { PasswordType.vBulletinPost3_8_5 });
             assertFalse(exposed);
 
+            // one with a bad salt
+            exposed = enzoic.CheckCredentialsEx("eicar_8@enzoic.com", "123456", null, null);
+            assertTrue(exposed);
         }
         catch (java.io.IOException ioException) {
             fail("IO exception reaching API: " + ioException.getMessage());

@@ -6,7 +6,7 @@
 
     <groupId>com.enzoic</groupId>
     <artifactId>enzoic-java-client</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
     <packaging>jar</packaging>
     <name>Enzoic Java Client Library</name>
     <description>A Java client library for the Enzoic API</description>

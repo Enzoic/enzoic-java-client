@@ -361,7 +361,16 @@ public class Enzoic {
     }
 
     private String CalcCredentialHash(final String username, final String password, String salt, PasswordHashSpecification specification) {
-        String passwordHash = CalcPasswordHash(specification.getHashType(), password, specification.getSalt());
+        String passwordHash = null;
+
+        try {
+            passwordHash = CalcPasswordHash(specification.getHashType(), password, specification.getSalt());
+        }
+        catch (Exception ex) {
+            // this can happen when a corrupt salt is received from the server
+            // occasionally when breach data is collected, invalid salt values are indexed.
+            // ignore these failures and return null so we'll skip
+        }
 
         if (passwordHash != null) {
             String argon2Hash = Hashing.argon2(username + "$" + passwordHash, salt);

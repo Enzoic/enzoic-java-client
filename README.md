@@ -28,7 +28,7 @@ The enzoic-java-client is available in Maven Central.
     <dependency>
       <groupId>com.enzoic</groupId>
       <artifactId>enzoic-java-client</artifactId>
-      <version>3.1.1</version>
+      <version>3.1.2</version>
     </dependency>
 </dependencies>
 ```
@@ -37,7 +37,7 @@ The enzoic-java-client is available in Maven Central.
 
 ```groovy
 dependencies {
-  compile 'com.enzoic:enzoic-java-client:3.1.1'
+  compile 'com.enzoic:enzoic-java-client:3.1.2'
 }
 ```
 
