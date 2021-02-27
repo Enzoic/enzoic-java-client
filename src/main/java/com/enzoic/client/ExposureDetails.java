@@ -24,7 +24,7 @@ public class ExposureDetails {
     /**
      * @return The number of credentials found in the exposure
      */
-    public int getEntries() {
+    public long getEntries() {
         return entries;
     }
 
@@ -83,7 +83,7 @@ public class ExposureDetails {
 
     private String id;
     private String title;
-    private int entries;
+    private long entries;
     private Date date;
     private String category;
     private String passwordType;
