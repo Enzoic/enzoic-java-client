@@ -3,6 +3,9 @@ package com.enzoic.client.utilities;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.InvalidKeyException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.mkammerer.argon2.Argon2Factory;
 import de.mkammerer.argon2.jna.Size_t;
@@ -54,6 +57,14 @@ public class Hashing {
             return bytesToHex(MessageDigest.getInstance("SHA-256").digest(utf8ToByteArray(toHash)));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Missing required hashing algorithm: SHA-256");
+        }
+    }
+
+    public static String sha384(final String toHash) {
+        try {
+            return bytesToHex(MessageDigest.getInstance("SHA-384").digest(utf8ToByteArray(toHash)));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Missing required hashing algorithm: SHA-384");
         }
     }
 
@@ -247,6 +258,38 @@ public class Hashing {
 
     public static String runCMS_SMF1_1(final String toHash, final String salt) {
         return Hashing.sha1(salt + toHash);
+    }
+
+    public static String ntlm(final String toHash) {
+        try {
+            return bytesToHex(new MD4().digest(toHash.getBytes("UTF-16LE")));
+        }
+        catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Unsupported encoding: UTF16");
+        }
+    }
+
+    public static String customAlgorithm7(final String toHash, final String salt) {
+        final byte[] key = utf8ToByteArray("d2e1a4c569e7018cc142e9cce755a964bd9b193d2d31f02d80bb589c959afd7e");
+
+        try {
+            Mac sha256Hmac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec keySpec = new SecretKeySpec(key, "HmacSHA256");
+            sha256Hmac.init(keySpec);
+            String sha1Salt = sha1(salt);
+            return bytesToHex(sha256Hmac.doFinal(utf8ToByteArray(sha1Salt + toHash)));
+        }
+        catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException("Invalid parameters");
+        }
+    }
+
+    public static String customAlgorithm9(final String toHash, final String salt) {
+        String result = sha512(toHash + salt);
+        for (int i = 0; i < 11; i++) {
+            result = sha512(result);
+        }
+        return result;
     }
 
     public static String argon2(final String toHash, final String salt) {

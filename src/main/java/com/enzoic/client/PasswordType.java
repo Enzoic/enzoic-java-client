@@ -102,6 +102,24 @@ enum PasswordType {
     @SerializedName("32")
     RunCMS_SMF1_1 (32),
 
+    @SerializedName("33")
+    NTLM (33),
+
+    @SerializedName("34")
+    SHA1Dash (34),
+
+    @SerializedName("35")
+    SHA384 (35),
+
+    @SerializedName("36")
+    CustomAlgorithm7 (36),
+
+    @SerializedName("37")
+    CustomAlgorithm8 (37),
+
+    @SerializedName("38")
+    CustomAlgorithm9 (38),
+
     @SerializedName("97")
     Unknown (97),
 

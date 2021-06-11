@@ -114,5 +114,17 @@ class HashingTest {
 
     @Test
     void runCMS_SMF1_1() { assertEquals("0de084f38ace8e3d82597f55cc6ad5d6001568e6", Hashing.runCMS_SMF1_1("password", "123")); }
+
+    @Test
+    void ntlm() { assertEquals("32ed87bdb5fdc5e9cba88547376818d4", Hashing.ntlm("123456")); }
+
+    @Test
+    void sha384() { assertEquals("0a989ebc4a77b56a6e2bb7b19d995d185ce44090c13e2984b7ecc6d446d4b61ea9991b76a4c2f04b1b4d244841449454", Hashing.sha384("123456")); }
+
+    @Test
+    void customAlgorithm7() { assertEquals("a753d386613efd6d4a534cec97e73890f8ec960fe6634db6dbfb9b2aab207982", Hashing.customAlgorithm7("123456", "123456")); }
+
+    @Test
+    void customAlgorithm9() { assertEquals("07c691fa8b022b52ac1c44cab3e056b344a7945b6eb9db727e3842b28d94fe18c17fe5b47b1b9a29d8149acbd7b3f73866cc12f0a8a8b7ab4ac9470885e052dc", Hashing.customAlgorithm9("0rangepeel", "6kpcxVSjagLgsNCUCr-D")); }
 }
 

@@ -488,6 +488,30 @@ public class Enzoic {
                     return Hashing.runCMS_SMF1_1(password, salt);
                 }
                 return null;
+            case NTLM:
+                return Hashing.ntlm(password);
+            case SHA384:
+                return Hashing.sha384(password);
+            case SHA1Dash:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.sha1("--" + salt + "--" + password + "--");
+                }
+                return null;
+            case CustomAlgorithm7:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.customAlgorithm7(password, salt);
+                }
+                return null;
+            case CustomAlgorithm8:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.sha256(salt + password);
+                }
+                return null;
+            case CustomAlgorithm9:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.customAlgorithm9(password, salt);
+                }
+                return null;
             default:
                 return null;
         }

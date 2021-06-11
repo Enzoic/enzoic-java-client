@@ -218,6 +218,12 @@ class EnzoicTest {
             assertEquals("5f4dcc3b5aa765d61d8327deb882c", method.invoke(enzoic, PasswordType.PartialMD5_29, "password", null));
             assertEquals("1230de084f38ace8e3d82597f55cc6ad5d6001568e6", method.invoke(enzoic, PasswordType.PliggCMS, "password", "123"));
             assertEquals("0de084f38ace8e3d82597f55cc6ad5d6001568e6", method.invoke(enzoic, PasswordType.RunCMS_SMF1_1, "password", "123"));
+            assertEquals("32ed87bdb5fdc5e9cba88547376818d4", method.invoke(enzoic, PasswordType.NTLM, "123456", null));
+            assertEquals("55566a759b86fbbd979b579b232f4dd214d08068", method.invoke(enzoic, PasswordType.SHA1Dash, "123456", "478c8029d5efddc554bf2fe6bb2219d8c897d4a0"));
+            assertEquals("0a989ebc4a77b56a6e2bb7b19d995d185ce44090c13e2984b7ecc6d446d4b61ea9991b76a4c2f04b1b4d244841449454", method.invoke(enzoic, PasswordType.SHA384, "123456", null));
+            assertEquals("a753d386613efd6d4a534cec97e73890f8ec960fe6634db6dbfb9b2aab207982", method.invoke(enzoic, PasswordType.CustomAlgorithm7, "123456", "123456"));
+            assertEquals("9fc389447b7eb88aff45a1069bf89fbeff89b8fb7d11a6f450583fa4c9c70503", method.invoke(enzoic, PasswordType.CustomAlgorithm8, "matthew", "Dn"));
+            assertEquals("07c691fa8b022b52ac1c44cab3e056b344a7945b6eb9db727e3842b28d94fe18c17fe5b47b1b9a29d8149acbd7b3f73866cc12f0a8a8b7ab4ac9470885e052dc", method.invoke(enzoic, PasswordType.CustomAlgorithm9, "0rangepeel", "6kpcxVSjagLgsNCUCr-D"));
         }
         catch (Exception ex) {
             fail("Exception calling CalcPasswordHash: " + ex.getMessage());
