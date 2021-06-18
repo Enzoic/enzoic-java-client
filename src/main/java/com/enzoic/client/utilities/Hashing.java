@@ -292,6 +292,14 @@ public class Hashing {
         return result;
     }
 
+    public static String sha512Crypt(final String toHash, final String salt) {
+        return Crypt.crypt(utf8ToByteArray(toHash), salt);
+    }
+
+    public static String customAlgorithm10(final String toHash, final String salt) {
+        return sha512(toHash + ":" + salt);
+    }
+
     public static String argon2(final String toHash, final String salt) {
 
         // defaults

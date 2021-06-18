@@ -512,6 +512,16 @@ public class Enzoic {
                     return Hashing.customAlgorithm9(password, salt);
                 }
                 return null;
+            case SHA512Crypt:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.sha512Crypt(password, salt);
+                }
+                return null;
+            case CustomAlgorithm10:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.customAlgorithm10(password, salt);
+                }
+                return null;
             default:
                 return null;
         }

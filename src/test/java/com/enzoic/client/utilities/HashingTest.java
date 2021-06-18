@@ -126,5 +126,11 @@ class HashingTest {
 
     @Test
     void customAlgorithm9() { assertEquals("07c691fa8b022b52ac1c44cab3e056b344a7945b6eb9db727e3842b28d94fe18c17fe5b47b1b9a29d8149acbd7b3f73866cc12f0a8a8b7ab4ac9470885e052dc", Hashing.customAlgorithm9("0rangepeel", "6kpcxVSjagLgsNCUCr-D")); }
+
+    @Test
+    void sha512Crypt() { assertEquals("$6$52450745$k5ka2p8bFuSmoVT1tzOyyuaREkkKBcCNqoDKzYiJL9RaE8yMnPgh2XzzF0NDrUhgrcLwg78xs1w5pJiypEdFX/", Hashing.sha512Crypt("hashcat", "$6$52450745")); }
+
+    @Test
+    void customAlgorithm10() { assertEquals("bd17b9d14010a1d4f8c8077f1be1e20b9364d9979bbcf8591337e952cc6037026aa4a2025543d39169022344b4dd1d20f499395533e35705296034bbf7e7d663", Hashing.customAlgorithm10("chatbooks", "NqXCvAHUpAWAco3hVTG5Sg0FfmJRQPKi0LvcHwylzXHhSNuWwvYdMSSGzswi0ZdJ")); }
 }
 

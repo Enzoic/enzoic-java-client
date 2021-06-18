@@ -120,6 +120,12 @@ enum PasswordType {
     @SerializedName("38")
     CustomAlgorithm9 (38),
 
+    @SerializedName("39")
+    SHA512Crypt (39),
+
+    @SerializedName("40")
+    CustomAlgorithm10 (40),
+
     @SerializedName("97")
     Unknown (97),
 
