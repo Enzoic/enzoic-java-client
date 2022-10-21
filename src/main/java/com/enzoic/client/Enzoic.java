@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
-import java.util.Date;
+import java.util.*;
+
 import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import com.enzoic.client.utilities.Hashing;
 
 /**
- * This is the main entry point for accessing Enzoic.
- *
+ * THIS IS THE MAIN ENTRY POINT FOR ACCESSING ENZOIC.
+ * <p>
  * Create this class with your API Key and Secret and then call the desired methods on the class
  * to access the Enzoic API.
  */
@@ -34,6 +32,7 @@ public class Enzoic {
 
     /**
      * Creates a new instance of Enzoic
+     *
      * @param apiKey your Enzoic API key
      * @param secret your Enzoic API secret
      */
@@ -43,8 +42,9 @@ public class Enzoic {
 
     /**
      * Creates a new instance of Enzoic
-     * @param apiKey your Enzoic API key
-     * @param secret your Enzoic API secret
+     *
+     * @param apiKey     your Enzoic API key
+     * @param secret     your Enzoic API secret
      * @param apiBaseURL override the default base API URL with an alternate - typically not necessary
      */
     public Enzoic(final String apiKey, final String secret, final String apiBaseURL) {
@@ -69,6 +69,7 @@ public class Enzoic {
 
     /**
      * Sets a timeout value for requests made to the Enzoic API.
+     *
      * @param timeoutInMs The timeout value in milliseconds to use.  0 indicates a timeout of infinity will be used.
      */
     public void SetRequestTimeout(final Integer timeoutInMs) {
@@ -77,6 +78,7 @@ public class Enzoic {
 
     /**
      * Gets the current request timeout value being used for making requests to the Enzoic API.
+     *
      * @return The timeout value in milliseconds being used.  0 indicates a timeout of infinity.
      */
     public Integer GetRequestTimeout() {
@@ -88,12 +90,13 @@ public class Enzoic {
      * are known to be compromised.
      * This call is made securely to the server - only a salted and hashed representation of the credentials are passed and
      * the salt value is not passed along with it.
-     * @see <a href="https://www.enzoic.com/docs/credentials-api">https://www.enzoic.com/docs/credentials-api</a>
+     *
      * @param username the username to check
      * @param password the password to check
      * @return if true, then the credentials are known to be compromised
-     * @throws IOException Could not communicate with Enzoic server.
+     * @throws IOException      Could not communicate with Enzoic server.
      * @throws RuntimeException Runtime errors indicated by message
+     * @see <a href="https://www.enzoic.com/docs/credentials-api">https://www.enzoic.com/docs/credentials-api</a>
      */
     public boolean CheckCredentials(final String username, final String password)
             throws IOException, RuntimeException {
@@ -106,32 +109,32 @@ public class Enzoic {
      * This call is made securely to the server - only a salted and hashed representation of the credentials are passed and
      * the salt value is not passed along with it.
      * The Ex version of the call includes additional parameters that allow the client to tweak the performance of the call.
-     *
+     * <p>
      * lastCheckDate allows the caller to pass in the date of the last check that was made for the credentials in question.
      * If the lastCheckDate is after the last new breach that was recorded for those credentials, there is no need to check them again
      * and no hashes will be calculated and no credentials API call will be made.  This can substantially improve performance.
      * Note that for this to work, the calling application will need to cache the date/time the last credentials check was
      * made for a given set of user credentials and invalidate reset that date/time if the credentials are changed.
-     *
+     * <p>
      * excludeHashTypes allows the calling application to exclude certain expensive password hash algorithms from being
      * calculated (e.g. BCrypt).  This can reduce the CPU impact of the call as well as potentially decrease the latency
      * it introduces.
      *
-     * @see <a href="https://www.enzoic.com/docs/credentials-api">https://www.enzoic.com/docs/credentials-api</a>
-     * @param username the username to check
-     * @param password the password to check
-     * @param lastCheckDate The timestamp for the last check you performed for this user.  If the date/time you provide
-     *                      for the last check is greater than the timestamp Enzoic has for the last breach
-     *                      affecting this user, the check will not be performed.  This can be used to substantially
-     *                      increase performance.  Can be set to null if no last check was performed or the credentials
-     *                      have changed since.
-     * @param excludeHashTypes  An array of PasswordTypes to ignore when calculating hashes for the credentials check.
-     *                          By excluding computationally expensive PasswordTypes, such as BCrypt, it is possible to
-     *                          balance the performance of this call against security.  Can be set to null if you don't
-     *                          wish to exclude any hash types.
+     * @param username         the username to check
+     * @param password         the password to check
+     * @param lastCheckDate    The timestamp for the last check you performed for this user.  If the date/time you provide
+     *                         for the last check is greater than the timestamp Enzoic has for the last breach
+     *                         affecting this user, the check will not be performed.  This can be used to substantially
+     *                         increase performance.  Can be set to null if no last check was performed or the credentials
+     *                         have changed since.
+     * @param excludeHashTypes An array of PasswordTypes to ignore when calculating hashes for the credentials check.
+     *                         By excluding computationally expensive PasswordTypes, such as BCrypt, it is possible to
+     *                         balance the performance of this call against security.  Can be set to null if you don't
+     *                         wish to exclude any hash types.
      * @return if true, then the credentials are known to be compromised
-     * @throws IOException Could not communicate with Enzoic server.
+     * @throws IOException      Could not communicate with Enzoic server.
      * @throws RuntimeException Runtime errors indicated by message
+     * @see <a href="https://www.enzoic.com/docs/credentials-api">https://www.enzoic.com/docs/credentials-api</a>
      */
     public boolean CheckCredentialsEx(final String username, final String password, final Date lastCheckDate,
                                       final PasswordType excludeHashTypes[])
@@ -146,7 +149,7 @@ public class Enzoic {
 
         String response = MakeRestCall(
                 apiBaseURL + ACCOUNTS_API_PATH + "?username=" +
-                        URLEncoder.encode(Hashing.sha256(username), "UTF-8"),
+                        URLEncoder.encode(Hashing.sha256(username.toLowerCase()), "UTF-8"),
                 "GET", null);
 
         if (response.equals("404")) {
@@ -171,7 +174,7 @@ public class Enzoic {
 
         ArrayList<String> credentialHashes = new ArrayList<String>();
         StringBuilder queryString = new StringBuilder();
-        for (int i = 0 ; i < Math.min(50, hashesRequired.size()); i++) {
+        for (int i = 0; i < Math.min(50, hashesRequired.size()); i++) {
             PasswordHashSpecification hashSpec = hashesRequired.get(i);
 
             if (Arrays.asList(excludedHashTypes).contains(hashSpec.getHashType())) {
@@ -219,11 +222,12 @@ public class Enzoic {
 
     /**
      * Checks whether the provided password is in the Enzoic database of known, compromised passwords.
-     * @see <a href="https://www.enzoic.com/docs/passwords-api">https://www.enzoic.com/docs/passwords-api</a>
+     *
      * @param password The password to be checked
      * @return If true, the password is a known, compromised password and should not be used.
-     * @throws IOException Could not communicate with Enzoic server.
+     * @throws IOException      Could not communicate with Enzoic server.
      * @throws RuntimeException Runtime errors indicated by message
+     * @see <a href="https://www.enzoic.com/docs/passwords-api">https://www.enzoic.com/docs/passwords-api</a>
      */
     public boolean CheckPassword(final String password)
             throws IOException, RuntimeException {
@@ -233,12 +237,13 @@ public class Enzoic {
     /**
      * Checks whether the provided password is in the Enzoic database of known, compromised passwords.  Returns extended
      * information about the compromised status of the password.
-     * @see <a href="https://www.enzoic.com/docs/passwords-api">https://www.enzoic.com/docs/passwords-api</a>
+     *
      * @param password The password to be checked
      * @return If compromised, returns a CheckPasswordExResponse containing details of the compromised status of the password.
-     *   Otherwise returns null.
-     * @throws IOException Could not communicate with Enzoic server.
+     * Otherwise returns null.
+     * @throws IOException      Could not communicate with Enzoic server.
      * @throws RuntimeException Runtime errors indicated by message
+     * @see <a href="https://www.enzoic.com/docs/passwords-api">https://www.enzoic.com/docs/passwords-api</a>
      */
     public CheckPasswordExResponse CheckPasswordEx(final String password)
             throws IOException, RuntimeException {
@@ -274,23 +279,23 @@ public class Enzoic {
 
     /**
      * Returns all of the credentials Exposures that have been found for a given username.
-     * @see <a href="https://www.enzoic.com/docs/exposures-api#get-exposures">https://www.enzoic.com/docs/exposures-api#get-exposures</a>
+     *
      * @param username The username or email address of the user to check
      * @return The response contains an array of exposure IDs for this user.  These IDs can be used with the GetExposureDetails call to get additional information about each Exposure.
      * @throws IOException Could not communicate with Enzoic server.
+     * @see <a href="https://www.enzoic.com/docs/exposures-api#get-exposures">https://www.enzoic.com/docs/exposures-api#get-exposures</a>
      */
     public ExposuresResponse GetExposuresForUser(final String username)
-        throws IOException {
+            throws IOException {
         ExposuresResponse result;
 
-        String response = MakeRestCall(apiBaseURL + EXPOSURES_API_PATH + "?username=" + URLEncoder.encode(username, "UTF-8"),
+        String response = MakeRestCall(apiBaseURL + EXPOSURES_API_PATH + "?username=" + URLEncoder.encode(Hashing.sha256(username.toLowerCase()), "UTF-8"),
                 "GET", null);
 
         if (response.equals("404")) {
             // don't have this email in the DB - return empty response
             result = new ExposuresResponse();
-        }
-        else {
+        } else {
             // deserialize response
             result = new Gson().fromJson(response, ExposuresResponse.class);
         }
@@ -302,10 +307,11 @@ public class Enzoic {
      * Returns the detailed information for a credentials Exposure.  The responses to this call can and should be cached
      * to limit the number of calls made.  The Exposure details are not typically expected to change over time, so they
      * can be cached for relatively long periods of time, e.g. for up to 30 days.
-     * @see <a href="https://www.enzoic.com/docs/exposures-api#get-exposure-details">https://www.enzoic.com/docs/exposures-api#get-exposure-details</a>
+     *
      * @param exposureID The ID of the Exposure
      * @return The response body contains the details of the Exposure or null if the Exposure ID could not be found.
      * @throws IOException Could not communicate with Enzoic server.
+     * @see <a href="https://www.enzoic.com/docs/exposures-api#get-exposure-details">https://www.enzoic.com/docs/exposures-api#get-exposure-details</a>
      */
     public ExposureDetails GetExposureDetails(final String exposureID)
             throws IOException {
@@ -322,8 +328,32 @@ public class Enzoic {
         return result;
     }
 
+    /**
+     * Returns a list of passwords that Enzoic has found for a specific user.  This call must be enabled for your account or you will
+     * receive a rejection when attempting to call it.*
+     * @param username The username to return passwords for
+     * @return The response body contains a list of the user's passwords or null if the username could not be found.
+     * @throws IOException Could not communicate with Enzoic server.
+     * @see <a href="https://www.enzoic.com/docs-raw-passwords-api">https://www.enzoic.com/docs-raw-passwords-api</a>
+     */
+    public UserPasswords GetUserPasswords(final String username)
+            throws IOException {
+        UserPasswords result = null;
+
+        String response = MakeRestCall(apiBaseURL + ACCOUNTS_API_PATH +
+                "?username=" + URLEncoder.encode(Hashing.sha256(username.toLowerCase()), "UTF-8") + "&includePasswords=1",
+        "GET", null);
+
+        if (!response.equals("404")) {
+            // deserialize response
+            result = new Gson().fromJson(response, UserPasswords.class);
+        }
+
+        return result;
+    }
+
     private String MakeRestCall(final String restUrl, final String method, final String body)
-        throws IOException, RuntimeException {
+            throws IOException, RuntimeException {
 
         URL url = new URL(restUrl);
 
@@ -338,11 +368,9 @@ public class Enzoic {
 
         if (responseStatus == 200) {
             return IOUtils.toString(conn.getInputStream(), conn.getContentEncoding());
-        }
-        else if (responseStatus == 404) {
+        } else if (responseStatus == 404) {
             return "404";
-        }
-        else {
+        } else {
             throw new RuntimeException("API Call to " + restUrl + " failed. HTTP error code: " + conn.getResponseCode() + " Message: " + conn.getContent().toString());
         }
     }
@@ -365,20 +393,18 @@ public class Enzoic {
 
         try {
             passwordHash = CalcPasswordHash(specification.getHashType(), password, specification.getSalt());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             // this can happen when a corrupt salt is received from the server
             // occasionally when breach data is collected, invalid salt values are indexed.
             // ignore these failures and return null so we'll skip
         }
 
         if (passwordHash != null) {
-            String argon2Hash = Hashing.argon2(username + "$" + passwordHash, salt);
+            String argon2Hash = Hashing.argon2(username.toLowerCase() + "$" + passwordHash, salt);
 
             String justHash = argon2Hash.substring(argon2Hash.lastIndexOf('$') + 1);
             return Hashing.bytesToHex(Hashing.decodeBase64(justHash));
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -520,6 +546,16 @@ public class Enzoic {
             case CustomAlgorithm10:
                 if (salt != null && salt.length() > 0) {
                     return Hashing.customAlgorithm10(password, salt);
+                }
+                return null;
+            case SHA256Crypt:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.sha256Crypt(password, salt);
+                }
+                return null;
+            case AuthMeSHA256:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.authMeSHA256(password, salt);
                 }
                 return null;
             default:

@@ -9,7 +9,7 @@ class AccountsResponse {
 
     /**
      * The salt value to use for credentials hashes for this account
-     * @return
+     * @return String
      */
     public String getSalt() {
         return salt;
@@ -17,7 +17,7 @@ class AccountsResponse {
 
     /**
      * The list of password hashes required to be calculated when checking credentials for this account
-     * @return
+     * @return PasswordHashSpecification[]
      */
     public PasswordHashSpecification[] getPasswordHashesRequired() {
         return passwordHashesRequired;

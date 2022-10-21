@@ -11,14 +11,16 @@ public class ExposuresResponse {
     }
 
     /**
-     * @return The number of items in the exposures array
+     * The number of items in the exposures array
+     * @return int
      */
     public int getCount() {
         return count;
     }
 
     /**
-     * @return An array of Exposure IDs. The IDs can be used with the GetExposureDetails call to retrieve additional info on each exposure.
+     * An array of Exposure IDs. The IDs can be used with the GetExposureDetails call to retrieve additional info on each exposure.
+     * @return String[]
      */
     public String[] getExposures() {
         return exposures;

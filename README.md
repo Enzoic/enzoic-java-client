@@ -28,7 +28,7 @@ The enzoic-java-client is available in Maven Central.
     <dependency>
       <groupId>com.enzoic</groupId>
       <artifactId>enzoic-java-client</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.0</version>
     </dependency>
 </dependencies>
 ```
@@ -37,7 +37,7 @@ The enzoic-java-client is available in Maven Central.
 
 ```groovy
 dependencies {
-  compile 'com.enzoic:enzoic-java-client:3.3.0'
+  compile 'com.enzoic:enzoic-java-client:3.4.0'
 }
 ```
 
@@ -112,6 +112,10 @@ System.out.println(exposures.getCount() + " exposures found for test@enzoic.com"
 // now get the full details for the first exposure found
 ExposureDetails details = enzoic.GetExposureDetails(exposures.getExposures()[0]);
 System.out.println("First exposure for test@enzoic.com was " + details.getTitle());
+
+// get all passwords for a given user - requires special approval, contact Enzoic sales
+UserPasswords userPasswords = enzoic.GetUserPasswords("eicar_0@enzoic.com");
+System.out.println("First password for eicar_0@enzoic.com was " + userPasswords.getPasswords[0].getPassword());
 ```
 
 More information in reference format can be found below.

@@ -143,7 +143,7 @@ class EnzoicTest {
 
     @Test
     void checkPassword() {
-        Enzoic enzoic = new Enzoic(getAPIKey(), getAPISecret());
+        Enzoic enzoic = getEnzoic();
 
         try {
             assertFalse(enzoic.CheckPassword("kjdlkjdlksjdlskjdlskjslkjdslkdjslkdjslkd"));
@@ -156,7 +156,7 @@ class EnzoicTest {
 
     @Test
     void checkPasswordEx() {
-        Enzoic enzoic = new Enzoic(getAPIKey(), getAPISecret());
+        Enzoic enzoic = getEnzoic();
 
         try {
             CheckPasswordExResponse response = enzoic.CheckPasswordEx("kjdlkjdlksjdlskjdlskjslkjdslkdjslkdjslkd");
@@ -181,7 +181,7 @@ class EnzoicTest {
 
     @Test
     void checkCalcPasswordHash() {
-        Enzoic enzoic = new Enzoic(getAPIKey(), getAPISecret());
+        Enzoic enzoic = getEnzoic();
 
         try {
             Class[] args = new Class[3];
@@ -224,9 +224,47 @@ class EnzoicTest {
             assertEquals("a753d386613efd6d4a534cec97e73890f8ec960fe6634db6dbfb9b2aab207982", method.invoke(enzoic, PasswordType.CustomAlgorithm7, "123456", "123456"));
             assertEquals("9fc389447b7eb88aff45a1069bf89fbeff89b8fb7d11a6f450583fa4c9c70503", method.invoke(enzoic, PasswordType.CustomAlgorithm8, "matthew", "Dn"));
             assertEquals("07c691fa8b022b52ac1c44cab3e056b344a7945b6eb9db727e3842b28d94fe18c17fe5b47b1b9a29d8149acbd7b3f73866cc12f0a8a8b7ab4ac9470885e052dc", method.invoke(enzoic, PasswordType.CustomAlgorithm9, "0rangepeel", "6kpcxVSjagLgsNCUCr-D"));
+            assertEquals("$5$rounds=5000$GX7BopJZJxPc/KEK$le16UF8I2Anb.rOrn22AUPWvzUETDGefUmAV8AZkGcD", method.invoke(enzoic, PasswordType.SHA256Crypt, "hashcat", "$5$rounds=5000$GX7BopJZJxPc/KEK"));
+            assertEquals("$SHA$7218532375810603$bfede293ecf6539211a7305ea218b9f3f608953130405cda9eaba6fb6250f824", method.invoke(enzoic, PasswordType.AuthMeSHA256, "hashcat", "7218532375810603"));
         }
         catch (Exception ex) {
             fail("Exception calling CalcPasswordHash: " + ex.getMessage());
+        }
+    }
+
+    @Test
+    void getUserPasswords() {
+        Enzoic enzoic = getEnzoic();
+
+        try {
+            UserPasswords result = enzoic.GetUserPasswords("enzoic_not_found@enzoic.com");
+            assertNull(result);
+
+            result = enzoic.GetUserPasswords("eicar_0@enzoic.com");
+            assertNotNull(result);
+            assertEquals(new Date(1665730960000L), result.getLastBreachDate());
+            assertEquals(PasswordType.Plaintext, result.getPasswords()[0].getHashType());
+            assertEquals("password123", result.getPasswords()[0].getPassword());
+            assertEquals("", result.getPasswords()[0].getSalt());
+            assertArrayEquals(new String[] { "634908d2e0513eb0788aa0b9", "634908d06715cc1b5b201a1a"}, result.getPasswords()[0].getExposures());
+
+            assertEquals(PasswordType.Plaintext, result.getPasswords()[3].getHashType());
+            assertEquals("123456", result.getPasswords()[3].getPassword());
+            assertEquals("", result.getPasswords()[3].getSalt());
+            assertArrayEquals(new String[] { "63490990e0513eb0788aa0d1", "634908d0e0513eb0788aa0b5"}, result.getPasswords()[3].getExposures());
+
+            // try an account with no permissions
+            try {
+                enzoic = new Enzoic(getAPIKey2(), getAPISecret2());
+                result = enzoic.GetUserPasswords("eicar_0@enzoic.com");
+                fail("GetUserPasswords should fail and return exception for accounts which do not have permissions");
+            }
+            catch (Exception ex) {
+                assertTrue(ex.getMessage().startsWith("Server returned HTTP response code: 403"));
+            }
+        }
+        catch (Exception ex) {
+            fail("Exception calling GetUserPasswords: " + ex.getMessage());
         }
     }
 
@@ -256,4 +294,13 @@ class EnzoicTest {
         return System.getenv("PP_API_SECRET");
     }
 
+    private String getAPIKey2() {
+        // set these env vars to run live tests
+        return System.getenv("PP_API_KEY_2");
+    }
+
+    private String getAPISecret2() {
+        // set these env vars to run live tests
+        return System.getenv("PP_API_SECRET_2");
+    }
 }

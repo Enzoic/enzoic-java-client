@@ -7,7 +7,7 @@ class PasswordHashSpecification {
 
     /**
      * The hash algorithm for this password specification
-     * @return
+     * @return PasswordType
      */
     public PasswordType getHashType() {
         return hashType;
@@ -15,7 +15,7 @@ class PasswordHashSpecification {
 
     /**
      * The salt value to use for this password, if any
-     * @return
+     * @return String
      */
     public String getSalt() {
         return salt;

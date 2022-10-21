@@ -300,6 +300,14 @@ public class Hashing {
         return sha512(toHash + ":" + salt);
     }
 
+    public static String sha256Crypt(final String toHash, final String salt) {
+        return Crypt.crypt(utf8ToByteArray(toHash), salt);
+    }
+
+    public static String authMeSHA256(final String toHash, final String salt) {
+        return "$SHA$" + salt + "$" + sha256(sha256(toHash) + salt);
+    }
+
     public static String argon2(final String toHash, final String salt) {
 
         // defaults
@@ -379,6 +387,8 @@ public class Hashing {
     }
 
     public static String md5Crypt(final String toHash, final String salt) { return Md5Crypt.md5Crypt(utf8ToByteArray(toHash), salt); }
+
+
 
     public static byte[] decodeBase64(String base64) {
         return Base64.decodeBase64(base64);
