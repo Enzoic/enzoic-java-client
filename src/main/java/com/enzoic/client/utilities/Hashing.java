@@ -308,6 +308,18 @@ public class Hashing {
         return "$SHA$" + salt + "$" + sha256(sha256(toHash) + salt);
     }
 
+    public static String hmacSHA1SaltAsKey(final String toHash, final String salt) {
+        try {
+            Mac sha1Hmac = Mac.getInstance("HmacSHA1");
+            SecretKeySpec keySpec = new SecretKeySpec(utf8ToByteArray(salt), "HmacSHA1");
+            sha1Hmac.init(keySpec);
+            return bytesToHex(sha1Hmac.doFinal(utf8ToByteArray(toHash)));
+        }
+        catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException("Invalid parameters");
+        }
+    }
+
     public static String argon2(final String toHash, final String salt) {
 
         // defaults

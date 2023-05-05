@@ -548,6 +548,10 @@ public class Enzoic {
                     return Hashing.customAlgorithm10(password, salt);
                 }
                 return null;
+            case HMACSHA1_SaltAsKey:
+                if (salt != null && salt.length() > 0) {
+                    return Hashing.hmacSHA1SaltAsKey(password, salt);
+                }
             case SHA256Crypt:
                 if (salt != null && salt.length() > 0) {
                     return Hashing.sha256Crypt(password, salt);

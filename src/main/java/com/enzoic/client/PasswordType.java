@@ -127,10 +127,13 @@ enum PasswordType {
     CustomAlgorithm10 (40),
 
     @SerializedName("41")
-    SHA256Crypt(41),
+    HMACSHA1_SaltAsKey(41),
 
     @SerializedName("42")
     AuthMeSHA256(42),
+
+    @SerializedName("43")
+    SHA256Crypt(43),
 
     @SerializedName("97")
     Unknown (97),

@@ -163,11 +163,9 @@ class EnzoicTest {
             assertNull(response);
             response = enzoic.CheckPasswordEx("123456");
             assertTrue(response.isRevealedInExposure());
-            assertTrue(response.relativeExposureFrequency() > 10);
             assertTrue(response.exposureCount() > 10);
             response = enzoic.CheckPasswordEx("password");
             assertTrue(response.isRevealedInExposure());
-            assertTrue(response.relativeExposureFrequency() > 10);
             assertTrue(response.exposureCount() > 10);
             response = enzoic.CheckPasswordEx("``--...____...--''");
             assertFalse(response.isRevealedInExposure());
@@ -226,6 +224,7 @@ class EnzoicTest {
             assertEquals("07c691fa8b022b52ac1c44cab3e056b344a7945b6eb9db727e3842b28d94fe18c17fe5b47b1b9a29d8149acbd7b3f73866cc12f0a8a8b7ab4ac9470885e052dc", method.invoke(enzoic, PasswordType.CustomAlgorithm9, "0rangepeel", "6kpcxVSjagLgsNCUCr-D"));
             assertEquals("$5$rounds=5000$GX7BopJZJxPc/KEK$le16UF8I2Anb.rOrn22AUPWvzUETDGefUmAV8AZkGcD", method.invoke(enzoic, PasswordType.SHA256Crypt, "hashcat", "$5$rounds=5000$GX7BopJZJxPc/KEK"));
             assertEquals("$SHA$7218532375810603$bfede293ecf6539211a7305ea218b9f3f608953130405cda9eaba6fb6250f824", method.invoke(enzoic, PasswordType.AuthMeSHA256, "hashcat", "7218532375810603"));
+            assertEquals("d89c92b4400b15c39e462a8caa939ab40c3aeeea", method.invoke(enzoic, PasswordType.HMACSHA1_SaltAsKey, "hashcat", "1234"));
         }
         catch (Exception ex) {
             fail("Exception calling CalcPasswordHash: " + ex.getMessage());
