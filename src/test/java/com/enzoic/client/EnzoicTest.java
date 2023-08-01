@@ -252,6 +252,21 @@ class EnzoicTest {
             assertEquals("", result.getPasswords()[3].getSalt());
             assertArrayEquals(new String[] { "63490990e0513eb0788aa0d1", "634908d0e0513eb0788aa0b5"}, result.getPasswords()[3].getExposures());
 
+            UserPasswordsWithExposureDetails resultWithDetails = enzoic.GetUserPasswordsWithExposureDetails("eicar_0@enzoic.com");
+            assertNotNull(resultWithDetails);
+            assertEquals(new Date(1665730960000L), resultWithDetails.getLastBreachDate());
+            assertEquals(PasswordType.Plaintext, resultWithDetails.getPasswords()[0].getHashType());
+            assertEquals("password123", resultWithDetails.getPasswords()[0].getPassword());
+            assertEquals("", resultWithDetails.getPasswords()[0].getSalt());
+            assertEquals(2, resultWithDetails.getPasswords()[0].getExposures().length);
+            assertEquals("enzoic test breach 1", resultWithDetails.getPasswords()[0].getExposures()[0].getTitle());
+
+            assertEquals(PasswordType.Plaintext, resultWithDetails.getPasswords()[3].getHashType());
+            assertEquals("123456", resultWithDetails.getPasswords()[3].getPassword());
+            assertEquals("", resultWithDetails.getPasswords()[3].getSalt());
+            assertEquals(2, resultWithDetails.getPasswords()[3].getExposures().length);
+            assertEquals("enzoic test breach 2", resultWithDetails.getPasswords()[3].getExposures()[0].getTitle());
+
             // try an account with no permissions
             try {
                 enzoic = new Enzoic(getAPIKey2(), getAPISecret2());

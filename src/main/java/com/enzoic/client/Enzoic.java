@@ -352,6 +352,30 @@ public class Enzoic {
         return result;
     }
 
+    /**
+     * Returns a list of passwords that Enzoic has found for a specific user, including full exposure details inling.
+     * This call must be enabled for your account or you will receive a rejection when attempting to call it.*
+     * @param username The username to return passwords for
+     * @return The response body contains a list of the user's passwords or null if the username could not be found.
+     * @throws IOException Could not communicate with Enzoic server.
+     * @see <a href="https://www.enzoic.com/docs-raw-passwords-api">https://www.enzoic.com/docs-raw-passwords-api</a>
+     */
+    public UserPasswordsWithExposureDetails GetUserPasswordsWithExposureDetails(final String username)
+            throws IOException {
+        UserPasswordsWithExposureDetails result = null;
+
+        String response = MakeRestCall(apiBaseURL + ACCOUNTS_API_PATH +
+                        "?username=" + URLEncoder.encode(Hashing.sha256(username.toLowerCase()), "UTF-8") + "&includePasswords=1&includeExposureDetails=1",
+                "GET", null);
+
+        if (!response.equals("404")) {
+            // deserialize response
+            result = new Gson().fromJson(response, UserPasswordsWithExposureDetails.class);
+        }
+
+        return result;
+    }
+
     private String MakeRestCall(final String restUrl, final String method, final String body)
             throws IOException, RuntimeException {
 
