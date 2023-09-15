@@ -252,20 +252,18 @@ class EnzoicTest {
             assertEquals("", result.getPasswords()[3].getSalt());
             assertArrayEquals(new String[] { "63490990e0513eb0788aa0d1", "634908d0e0513eb0788aa0b5"}, result.getPasswords()[3].getExposures());
 
-            UserPasswordsWithExposureDetails resultWithDetails = enzoic.GetUserPasswordsWithExposureDetails("eicar_0@enzoic.com");
-            assertNotNull(resultWithDetails);
-            assertEquals(new Date(1665730960000L), resultWithDetails.getLastBreachDate());
-            assertEquals(PasswordType.Plaintext, resultWithDetails.getPasswords()[0].getHashType());
-            assertEquals("password123", resultWithDetails.getPasswords()[0].getPassword());
-            assertEquals("", resultWithDetails.getPasswords()[0].getSalt());
-            assertEquals(2, resultWithDetails.getPasswords()[0].getExposures().length);
-            assertEquals("enzoic test breach 1", resultWithDetails.getPasswords()[0].getExposures()[0].getTitle());
+            result = enzoic.GetUserPasswords("eicar_0@enzoic.com", true);
+            assertNotNull(result);
+            assertEquals(new Date(1665730960000L), result.getLastBreachDate());
+            assertEquals(PasswordType.Plaintext, result.getPasswords()[0].getHashType());
+            assertEquals("password123", result.getPasswords()[0].getPassword());
+            assertEquals("", result.getPasswords()[0].getSalt());
+            assertArrayEquals(new String[] { "634908d2e0513eb0788aa0b9", "634908d06715cc1b5b201a1a"}, result.getPasswords()[0].getExposures());
 
-            assertEquals(PasswordType.Plaintext, resultWithDetails.getPasswords()[3].getHashType());
-            assertEquals("123456", resultWithDetails.getPasswords()[3].getPassword());
-            assertEquals("", resultWithDetails.getPasswords()[3].getSalt());
-            assertEquals(2, resultWithDetails.getPasswords()[3].getExposures().length);
-            assertEquals("enzoic test breach 2", resultWithDetails.getPasswords()[3].getExposures()[0].getTitle());
+            assertEquals(PasswordType.Plaintext, result.getPasswords()[3].getHashType());
+            assertEquals("123456", result.getPasswords()[3].getPassword());
+            assertEquals("", result.getPasswords()[3].getSalt());
+            assertArrayEquals(new String[] { "63490990e0513eb0788aa0d1", "634908d0e0513eb0788aa0b5"}, result.getPasswords()[3].getExposures());
 
             // try an account with no permissions
             try {

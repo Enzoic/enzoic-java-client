@@ -352,14 +352,57 @@ public class Enzoic {
         return result;
     }
 
+
     /**
-     * Returns a list of passwords that Enzoic has found for a specific user, including full exposure details inling.
-     * This call must be enabled for your account or you will receive a rejection when attempting to call it.*
+     * Returns a list of passwords that Enzoic has found for a specific user.  This call must be enabled for your account or you will
+     * receive a rejection when attempting to call it.<br><br>
+     * NOTE: THIS VARIANT OF THE CALL CAN BE USED TO PASS A PARTIAL SHA-256 HASH OF THE USERNAME
+     * RATHER THAN THE FULL HASH.  We do not recommend using this variant unless you have compliance requirements that
+     * prevent you from passing even a hash of a user's email address to a 3rd party, as it will not perform as well as
+     * the exact match variant.
+     * @param username The username to return passwords for
+     * @param usePartialHashMatching If true, this call will pass the first 8 characters of the SHA-256 hash of the
+     *                               passed username, rather than the full hash.
+     * @return The response body contains a list of the user's passwords or null if the username could not be found.
+     * @throws IOException Could not communicate with Enzoic server.
+     * @see <a href="https://www.enzoic.com/docs-raw-passwords-api">https://www.enzoic.com/docs-raw-passwords-api</a>
+     */
+    public UserPasswords GetUserPasswords(final String username, final boolean usePartialHashMatching)
+            throws IOException {
+        if (!usePartialHashMatching) return GetUserPasswords(username);
+
+        String fullUsernameHash = Hashing.sha256(username.toLowerCase());
+
+        String response = MakeRestCall(apiBaseURL + ACCOUNTS_API_PATH +
+                        "?partialUsernameHash=" + URLEncoder.encode(fullUsernameHash.substring(0, 8), "UTF-8") + "&includePasswords=1",
+                "GET", null);
+
+        if (!response.equals("404")) {
+            // deserialize response
+            UserPasswordsByPartialHashCandidates candidates = new Gson().fromJson(response, UserPasswordsByPartialHashCandidates.class);
+
+            // find the matching candidate, if any
+            for (UserPasswordsByPartialHash candidate : candidates.getCandidates()) {
+                if (candidate.getUsernameHash().equals(fullUsernameHash)) {
+                    return candidate;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * NOTE: THIS CALL IS DEPRECATED DUE TO SEVERE PERFORMANCE ISSUES AND WILL BE REMOVED IN A FUTURE RELEASE.<br>
+     * INSTEAD, USE GetUserPasswords AND LOOKUP EXPOSURE DETAILS AS NECESSARY USING GetExposureDetails.<br><br>
+     * Returns a list of passwords that Enzoic has found for a specific user, including full exposure details inline.
+     * This call must be enabled for your account or you will receive a rejection when attempting to call it.
      * @param username The username to return passwords for
      * @return The response body contains a list of the user's passwords or null if the username could not be found.
      * @throws IOException Could not communicate with Enzoic server.
      * @see <a href="https://www.enzoic.com/docs-raw-passwords-api">https://www.enzoic.com/docs-raw-passwords-api</a>
      */
+    @Deprecated
     public UserPasswordsWithExposureDetails GetUserPasswordsWithExposureDetails(final String username)
             throws IOException {
         UserPasswordsWithExposureDetails result = null;
